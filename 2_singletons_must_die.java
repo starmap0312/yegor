@@ -21,21 +21,23 @@ class Database {
 }
 // suppose we have to access to the pool in many different places, we can get a new connection from the sigleton object
 
-
 // client code:
 //   ex. a JAX-RS client: a simple MVC architecture, where text() method is a controller
 @Path("/")
 class Index {
+    // client class
 
     @GET
     public String text() { // a controller method
-        java.sql.Connection connection = Database.INSTANCE.connect(); // get a new connection from the (global) singleton instance
+        java.sql.Connection connection = Database.INSTANCE.connect(); // get a new connection from staic (global) singleton instance
         return new JdbcSession(connection)
             .sql("SELECT text FROM table")
             .fetch(new SingleOutcome(String.class));
     }
 }
-// we need a singleton instance to be globally available so that any MVC controller  have direct access to it
+// why is it bad?
+//   we need a singleton instance to be globally available so that any MVC controller have direct access to it
+//   client classes are implicitly coupled together due to the (global) singleton
 
 // (good design: use dependency injection instead: get the database connection pool from constructor)
 class Index {
@@ -47,7 +49,7 @@ class Index {
     }
 
     public String text() { // a controller method
-        java.sql.Connection connection = db.connect();
+        java.sql.Connection connection = db.connect();                // get a new connection from the injected dependency
         return new JdbcSession(this.conn)
             .sql("SELECT text FROM table")
             .fetch(new SingleOutcome(String.class));
@@ -55,3 +57,5 @@ class Index {
 }
 // forget about singletons: turn them into dependencies and pass them from object to object
 //   ex. pass an instance of Database to all objects that may need it through their constructors
+// client classes are decoupled (client is coupled to the injector instead)
+

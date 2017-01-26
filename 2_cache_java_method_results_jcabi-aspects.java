@@ -18,15 +18,17 @@ public class Page {
 }
 
 // how caching works: a static hash map with (key, value) pairs
-//   key: method coordinates, i.e. the object, an owner of method, method name with parameter types
+//   key: method coordinates
+//     i.e. the object, an owner of method, method name with parameter types
 //   value: method result
 //
-//   right after the above method load() finishes, the hash map gets a new entry
+// ex. right after the above method load() finishes, the hash map gets a new entry
 //     key: [page, "load()"]
 //     value: "<html>...</html>"
-//   every consecutive call to load() will be intercepted by the aspect from jcabi-aspects and
-//     resolved immediately with a value from the hash map
-//   the method has no control until the end of its lifetime, i.e. 5 minutes
+//
+//     every consecutive call to load() will be intercepted by the aspect from jcabi-aspects and
+//       resolved immediately with a value from the hash map
+//     the method has no control until the end of its lifetime, i.e. 5 minutes
 //
 //
 // What About Cache Flushing
