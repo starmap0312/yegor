@@ -57,5 +57,5 @@ class Index {
 }
 // forget about singletons: turn them into dependencies and pass them from object to object
 //   ex. pass an instance of Database to all objects that may need it through their constructors
-// client classes are decoupled (client is coupled to the injector instead)
+// client classes are decoupled (client is coupled to interface of the injected dependency)
 
