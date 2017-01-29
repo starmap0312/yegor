@@ -121,5 +121,5 @@ JsonMedia media = new JsonMedia("book");
 JsonObject json = book.print(media).json();
 
 // easy to extend
-//   the JsonMedia can be replaced by other other objects that also implements Media
-//   ex. XmlMedia who knows how to add new xml contents and print the XML format
+//   the JsonMedia can be replaced by other objects that also implements Media
+//     ex. XmlMedia who knows how to add new xml contents and print the XML format
