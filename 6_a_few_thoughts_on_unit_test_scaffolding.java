@@ -1,17 +1,16 @@
-// JUnit test fixtures are evil
+// JUnit test fixtures are bad design 
 //   it encourages developers to couple test methods
 //   
 // example:
 //
 // (bad design: use test fixtures for the preparation of testing)
-
 public final class MetricsTest {
 
     private File temp;
     private Folder folder;
 
     @Before
-    public void prepare() { // a preparation step that both test methods need (this couples the test methods)
+    public void prepare() {
         this.temp = Files.createTempDirectory("test");
         this.folder = new DiscFolder(this.temp);
         this.folder.save("first.txt", "Hello, world!");
@@ -33,13 +32,14 @@ public final class MetricsTest {
         assertEquals(4, new Metrics(this.folder).wc());
     }
 }
+// why is it bad?
+//   it has a preparation step that both test methods need, which couples the test methods
 
 // (better design: isolate the test methods, by using for the preparation of testing)
-
 public final class MetricsTest {
 
     @Test
-    public void calculatesTotalSize() { // a test method for testing Metrics's size() method
+    public void calculatesTotalSize() {                       // a test method for testing Metrics's size() method
         final File dir = Files.createTempDirectory("test-1"); // prepare a tmp folder for testing
         final Folder folder = MetricsTest.folder(             // prepare a tmp file for testing
             dir,
@@ -54,7 +54,7 @@ public final class MetricsTest {
    }
 
    @Test
-   public void countsWordsInFiles() { // a test method for testing Metrics's wc() method
+   public void countsWordsInFiles() {                        // a test method for testing Metrics's wc() method
        final File dir = Files.createTempDirectory("test-2"); // prepare a tmp folder for testing
        final Folder folder = MetricsTest.folder(             // prepare a tmp file for testing
            dir,
@@ -78,20 +78,21 @@ public final class MetricsTest {
        return folder;
    }
 } 
+// why is it better?
+//   it has an individual prepararation step inside each test method, which decouples the two test methods
 
 // (good design: use a fake object for the preparation of testing)
-
-// a fake object for creating tmp folder and tmp files for testing
 public final class FkFolder implements Folder, Closeable {
+    // define a fake class (object) for creating tmp folder and tmp files for testing
 
     private final File dir;
     private final String[] parts;
 
-    public FkFolder(String... prts) {            // second constructor
+    public FkFolder(String prts) {            // second constructor
         this(Files.createTempDirectory("test-1"), parts);
     }
 
-    public FkFolder(File file, String... prts) { // primary constructor
+    public FkFolder(File file, String prts) { // primary constructor
         this.dir = file;
         this.parts = parts;
     }
@@ -138,8 +139,9 @@ public final class MetricsTest {
         }
     }
 }
+// why is it good?
+//   both test methods utilizes the fake object to create tmp folder and tmp files for testing, which decouples the two test methods
+//   the fake object can be reused for new tests
 
 // fake objects that are shipped together with production code
-//   all test methods are decoupled
-//   the fake object can be reused for new tests
 
