@@ -2,6 +2,13 @@
 //   NULL refernece is a clear indicator of code smell
 //   NULL references is an inheritance of procedural programming, ex. C
 //   use Null Objects / Exceptions instead
+// in java, null reference can be assigned to any object type
+//   ex. String str = null;
+//   ex. Integer i  = null;
+//   ex. Double num = null;
+// in java, primitive types cannot be assigned as null, ex. int, float, double 
+//   ex. int n = null;      ==> compile error
+//   ex. double num = null; ==> compile error
 //
 // example: InputStream, resource that needs to be open and close explicitly
 //
