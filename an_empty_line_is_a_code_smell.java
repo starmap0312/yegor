@@ -1,6 +1,7 @@
 // An Empty Line is a Code Smell
-//   an empty line in a method is used for separation of concerns, but a method should always do one thing
-//   refactor the code, so that there is no empty line in a method
+//   an empty line in a method is used for separation of concerns
+//   but a method should always do one thing:
+//     refactor the code, so that there is no empty line in a method
 //
 // example:
 //
