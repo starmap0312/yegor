@@ -93,24 +93,26 @@ dept.getByName("Jeffrey").transferTo(dept2);
 // 3) NULL reference has performance advantanges? No.
 // a) NULL reference
 // ex. a real example of using Map in Java: only one search in Map is required
-//     the client code in procedural programming requires only one search
-Employee employee = employees.get("Jeffrey"); // use of get() method of Map interface in Java
-if (employee == NULL) {                       // use of null reference: fail slowly
-    throw new EmployeeNotFoundException();
+//     use null reference to require only one search
+public Employee getByName(String name) {
+    Employee employee = employees.get("Jeffrey"); // use of get() method of Map interface in Java: one search
+    if (employee == NULL) {                       // use of null reference to avoid second search
+        throw new EmployeeNotFoundException();
+    }
+    return employee;
 }
-return employee;
 
 // b) throwing Exceptions: two searches are needed? No.
 // ex. implementation of throwing Exceptions in get() method may require two searches
-public Employee get(String name) {
+public Employee getByName(String name) {
     if (!employees.containsKey("Jeffrey")) {    // first search
         throw new EmployeeNotFoundException();
     }
     return employees.get("Jeffrey");            // second search
 }
 
-// improvement: uses an Iterator instead, then only one search is needed
-public Employee get(String name) {
+// improvement: uses an Iterator to avoid null reference as well as second search 
+public Employee getByName(String name) {
     Iterator found = Map.search("Jeffrey");     // returns an iterator
     if (!found.hasNext()) {                     // search happens only when the queue is empty
         throw new EmployeeNotFoundException();
@@ -118,7 +120,7 @@ public Employee get(String name) {
     return found.next();                        // search happens only when the queue is empty
 }
 
-// 4) use of null object and throwing exceptions all together
+// example of null object
 // a) fail fast: make your code as fragile as possible, letting it break immediately and when necessary
 //    i.e. hiding this failure from its client (easier to debug, don't make it fail slowly)
 //    don't use NULL references, instead, use NULL objects or raise exceptions
@@ -145,9 +147,9 @@ public Employee getByName(String name) {
     }
     return employee;
 }
+// note: Null Object exposes common behavior and throws exceptions on all other method calls
 
-// ex. Null Object exposes common behavior and throws exceptions on all other method calls
-// the client code in OOP
+// the client code is rather simple
 employee = dept.getByName("Unknown")
 System.out.println(employee.name()); // common behavior
 employee.transferTo(dept2);          // throw an exception
