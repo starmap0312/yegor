@@ -10,7 +10,6 @@ interface Name {
 }
 
 // (bad design: computation inside the constructor)
-
 public final class EnglishName implements Name {
 
     private final String name;
@@ -24,16 +23,16 @@ public final class EnglishName implements Name {
         return this.name;
     }
 }
-
 // why is it bad?
 //   the object is similar to an imperative utility method
 //     in imperative programming, we do all calculations right now and return fully ready results
+//       i.e. when EnglishName is instantiated, it's first name is computed immediately and ready for access
 //     in declarative programming, we instead try to delay calculations for as long as possible
-//   we are abusing the new operator and turning it into a static method
-//     it does the calculations for us right now
+//       i.e. when EnglishName is instantiated, it's first name computation is delayed until accessed
+//   we are abusing the new operator (object construction) and turning it into a static method
+//     i.e. it does the calculations for us right now
 //
 // (good design)
-
 public final class EnglishName implements Name {
 
     private final CharSequence text;
@@ -50,8 +49,7 @@ public final class EnglishName implements Name {
 }
 
 // the client code
-final Name name = new EnglishName(new NameInPostgreSQL(/*...*/));
-
+final Name name = new EnglishName(new NameInPostgreSQL(/*...*/)); // the bad design will need to go to database right at the instantiation
 if (/* something goes wrong */) {
     throw new IllegalStateException(
         String.format("Hi, %s, we can't proceed with your application", name.first())
@@ -59,7 +57,6 @@ if (/* something goes wrong */) {
 }
 
 // we can resolve the performance issue using decorator classes
-
 public final class CachedName implements Name {
 
     private final Name origin;
