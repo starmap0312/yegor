@@ -1,5 +1,12 @@
 // Web Framework
-// ex. Servlets, JSP, JAX-RS, Spring Framework, Play Framework, JSF with Facelets, Spark, etc.
+//   ex. Play Framework, Servlets, JSP, JAX-RS, Spring Framework, Play Framework, JSF with Facelets, Spark, etc.
+// why are they bad?
+//   full of static methods, un-testable data structures, and dirty hacks
+// Takes Framework
+//   1) No NULLs (i.e. no ad-hoc null reference handling)
+//   2) no public static methods (i.e. no global variable or global singleton/method)
+//   3) no mutable classes (i.e. simpler to construct, test, use, and thread-safe)
+//   4) no class casting, reflection, and instanceof operators
 //
 // Java Web Architecture in a Nutshell
 //
@@ -45,7 +52,6 @@ public class Foo {
 
 // (Step 3)
 // code for reading an input stream from the socket
-
 final BufferedReader reader = new BufferedReader(
     new InputStreamReader(socket.getInputStream())
 );
@@ -114,3 +120,28 @@ Hello, world!
 //   2) no public static methods
 //   3) no mutable classes
 //   4) no class casting, reflection, and instanceof operators
+// 
+// example
+//
+// create a working web application: i.e. create a single class that implements Take interface
+import org.takes.Request;
+import org.takes.Take;
+
+public final class TkFoo implements Take {
+
+      @Override
+      public Response route(final Request request) {
+          return new RsText("Hello, world!");
+      }
+}
+
+// start a server
+import org.takes.http.Exit;
+import org.takes.http.FtBasic;
+
+public class Foo {
+    public static void main(final String[] args) throws Exception {
+        new FtBasic(new TkFoo(), 8080).start(Exit.NEVER);
+    }
+}
+
