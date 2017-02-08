@@ -16,6 +16,8 @@ public class NumberUtils {
         return a > b ? a : b;
     }
 }
+// why is it bad?
+//   hard to test: hard-coded dependency, cannot be replaced with test-double
 
 // the client code
 int max = NumberUtils.max(10, 5);
