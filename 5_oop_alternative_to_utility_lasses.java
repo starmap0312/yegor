@@ -1,17 +1,13 @@
 // OOP Alternative to Utility Classes
 //   utility classes are not proper objects
-//   ex. StringUtils, IOUtils, FileUtils (Apache Commons)
-//       Iterables, Iterators (Guava)
-//       Files (JDK7)
+//   ex. StringUtils, IOUtils, FileUtils (Apache Commons), Iterables, Iterators (Guava), Files (JDK7)
 //   inherited from procedural programming (a functional decomposition paradigm)
 //
 // example: a utility method max() for selecting the maximum value of two
 //
 // (bad design: procedural programming)
-
-// a class without any state and prvoiding common utility code
-
 public class NumberUtils {
+    // a class without any state and prvoiding common utility code
     public static int max(int a, int b) {
         return a > b ? a : b;
     }
@@ -27,7 +23,6 @@ int max = NumberUtils.max(10, 5);
 // 2) instead of calling supplementary static functions, we should create objects that are capable of
 //    exposing the behavior we are seeking
 //    ex. create Max objects responsible for selecting maximum value of its two values
-
 public class Max implements Number {
 
     private final int a;
@@ -50,9 +45,7 @@ int max = new Max(10, 5).intValue();
 // example: a utility method transform() for reading a text file, trimming every line, and saving in another file
 //
 // (bad design: procedural programming)
-
-// define a procedure of execution
-void transform(File in, File out) {
+void transform(File in, File out) { // define a procedure of execution
     Collection<String> src = FileUtils.readLines(in, "UTF-8"); // read lines from a file
     Collection<String> dest = new ArrayList<>(src.size());
     for (String line : src) {                                  // trim every line, saving in a collection
@@ -60,11 +53,11 @@ void transform(File in, File out) {
     }
     FileUtils.writeLines(out, dest, "UTF-8");                  // save the collection in another file 
 }
-// the method is responsbile for too many things
-// it is hard to test the method (we need to prepare a real file if want to test the method)
+// why is it bad?
+//   the method is responsbile for too many things
+//   it is hard to test the method (we need to prepare a real file if want to test the method)
 
 // (good design: object-oriented programming)
-
 void transform(File in, File out) {
     Collection<String> src = new Trimmed(new FileLines(new UnicodeFile(in)));
     Collection<String> dest = new FileLines(new UnicodeFile(out));
@@ -87,10 +80,10 @@ void transform(File in, File out) {
 //      declarative: enables lazy execution, i.e. the file is not read until its data is required
 //        the whole task starts only after we call addAll()
 
+
 // another example: a utility method readWords() for reading words from a file
 //
 // (bad design)
-
 class FileUtils {
 
     public static Iterable<String> readWords(File f) {
@@ -102,16 +95,14 @@ class FileUtils {
         return words;
     }
 }
-
-// because the utility method readWords() is responsible for too many things, to test it
+// why is it bad?
+//   because the utility method readWords() is responsible for too many things, to test it
 //   we need to prepare a file for it to read and debug the code if the result is not what we expect
 //
 // (good design: distribute the responsibilities to different objects)
-//
 // Step 1: turn the utility method into a class
-
-// class Words is responsible for both reading a file into a string and iterating over words of that string
 class Words implements Iterable<String> {
+    // this class is responsible for both reading a file into a string and iterating over words of that string
 
     private final File file;
 
@@ -129,12 +120,12 @@ class Words implements Iterable<String> {
         return words.iterator();
     }
 }
-// the class is responsible for too many things
+// why is it bad?
+//   the class is responsible for too many things
 
 // Step 2: refactor the class and distribute its responsibilities to other objects
-
-// class Text is responsibe for reading the file into a string
 class Text {
+    // this class is responsibe for reading the file into a string
 
     private final File file;
 
@@ -148,8 +139,8 @@ class Text {
     }
 }
 
-// class Word is responsibe for iterating the words of string
 class Words implements Iterable<String> {
+    // this class is responsibe for iterating the words of string
 
     private final String text;
 
@@ -166,10 +157,10 @@ class Words implements Iterable<String> {
         return words.iterator();
     }
 }
+// why is this good?
+//   the code is more testable and reusable: we don't need to prepare a file for it to read
 
-// more testable and reusable: we don't need to prepare a file for it to read
-// 
-// the test code
+// ex. the test code
 import org.junit.Test;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
