@@ -61,10 +61,10 @@ public class MyMath {
 } // the result is ready to be used immediately (i.e. delivers the result here and now)
 
 // example: functional programming
-(defun foo (x) (x 5))   // define function foo
+(defun foo (x) (x 5))   // define function foo (packager that delivers result/product)
 // some time later
 (defun bar (x) (+ x 1)) // define function bar
-(print (foo bar))       // pass function bar as an argument to function foo
+(print (foo bar))       // pass function bar (result/product) as an argument to function foo
 
 // although utility classes look more like functional programming, but they are not
 //   you can't pass a static method as an argument to another method
