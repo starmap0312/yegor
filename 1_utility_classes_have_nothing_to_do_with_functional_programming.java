@@ -1,18 +1,24 @@
 // Utility Classes Have Nothing to Do With Functional Programming
 // Imperative programming vs. Declarative programming
 // 1) imperative programming
-//    focus on describing how a program operates in terms of statements that change a program state
+//    focus on describing "how" a program operates in terms of statements that change a program state
 //    ex.
 public class MyMath {
     public double f(double a, double b) {
-        double max = Math.max(a, b);
-        double x = Math.abs(max);
+        double max = Math.max(a, b);      // get result immediately
+        double x = Math.abs(max);         // get result immediately
         return x;
+    }
+}
+// refactored
+public class MyMath {
+    public double f(double a, double b) {
+        return Math.abs(Math.max(a, b));
     }
 }
 
 // 2) Declarative programming
-//    focus on what the program should accomplish without prescribing how to do it (actions to be taken)
+//    focus on "what" the program should accomplish without prescribing how to do it (actions to be taken)
 //    ex1.
 (defun f (a b) (abs (max a b)))
 
@@ -21,29 +27,28 @@ public class MyMath {
   (print "X equals to " x)) // until print starts to output characters, the function max won't be called
 
 // three roles in programming scenario
-// 1) a buyer of the result (product)
-// 2) a packager of the result (product)
-// 3) a consumer of the result (product)
+// 1) a buyer of the result
+// 2) a packager of the result
+// 3) a consumer of the result
 // ex. imperative programming
-public void foo() {                       // 3) a consumer of the result (product)
+public void foo() {                       // 3) a consumer of the result
     double x = this.calc(5, -7);
     System.out.println("max+abs equals to " + x);
-} // the buyer gets the result (product) and presents it to the consumer
+} // the buyer gets the result and presents it to the consumer
 
-private double calc(double a, double b) { // 1) a buyer of the result (product)
-    double x = Math.f(a, b);              // 2) a packager of the result (product)
+private double calc(double a, double b) { // 1) a buyer of the result
+    double x = Math.f(a, b);              // 2) a packager of the result
     return x;
-} // the buyer asks the packager to package the result (product) and presents it to him
-  // the result (product) is ready to be used immediately
+} // the buyer asks the packager to package the result and presents it to him
+  // the result is ready to be used immediately
 
 // ex. declarative programming
 //     the buyer gets a promise instead and presents it to the consumer
-//     only when the consumer decides to convert it to result (product), the result is packaged and
+//     only when the consumer decides to convert it to result, the result is packaged and
 //       presented to him
 // imperative: a product is ready to be used
 // declarative: a promise for the product which can later be converted into a real product
 
-// 
 //   functional programming:
 //     declarative: focuses on "what" the program should accomplish without prescribing how to do it
 //       (the client only knows of the interface the object subscribed)
