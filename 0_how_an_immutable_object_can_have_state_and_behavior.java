@@ -6,7 +6,7 @@
 //   a mutalbe object has an identity and its state may change
 //   an immutable object does not have an identity and its state never changes
 //
-// example: object that represents a frequently changing-title document
+// example: representing a non-frequently changing-title document
 //
 // (bad design: a mutable object with title as its state)
 class Document {
@@ -88,8 +88,7 @@ if (first.equals(second)) { // return TRUE as the two objects encapsulate the sa
 // we cannot modify the object's internal state but create a new immutalbe object instead
 third = first.setTitle("How to cook pasta");
 
-
-// What about representing a frequently changing-title documents?
+// example: representing a frequently changing-title document
 //   if document's title frequently changes, then title should not be its state but its behavior instead
 //
 // (good design: an immutable object with title as its behavior)
