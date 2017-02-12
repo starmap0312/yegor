@@ -1,7 +1,25 @@
-// immutablity:
-//   not allowint any modifications to the encapsulated state
-// different levels of immutablity: objects are immutable but their behaviors differ
-// 1) constant: a function always returns the same value
+// different levels of immutablity:
+//   objects are immutable but their behaviors may differ
+//   immutable objects are always loyal to the entities they represent (it never changes its coordinates)
+// 1) Constant
+//    the object is immutable: it doesn't allow any modifications to the encapsulated state
+//    its function is pure function: always returns the same value
+// 2) Not a Constant
+//    the object is immutable: it doesn't allow any modifications to the encapsulated state
+//    its function is NOT pure function: may return different value if called multiple times
+// 3) Represented Mutability
+//    the object is immutable: it never changes its coordinates (i.e. the entity it represents)
+//    its function is NOT pure function: may return different value if called multiple times
+//    the object represents a mutable real-world entity: it may even accept requests to change the entity's state
+// 4) Encapsulated Mutability 
+//    the object is immutable: it never changes its coordinates (i.e. the entity it represents)
+//    its function is NOT pure function: may return different value if called multiple times
+//    the object represents a mutable real-world entity: it may even accept requests to change the entity's state
+//    the real-world entity is in memory 
+
+// examples:
+//
+// 1) constant: its function always returns the same value
 class Book {
     private final String title; // final: cannot be modified once set
 
@@ -14,7 +32,7 @@ class Book {
     }
 }
 
-// 2) not a constant: a function may returns different values when called with the same parameters 
+// 2) not a constant: its function may returns different values when called with the same parameters 
 class  Book {
     private final String title;
 
@@ -27,7 +45,7 @@ class  Book {
     }
 }
 
-// 3) represented mutability: not constnat, i.e. a function may return different values
+// 3) represented mutability: its function may return different values
 //                            the represented entity (ex. file) is a mutable real-world entity 
 class Book {
     private final Path path;      // final: the coordinate of the object never changes
@@ -42,3 +60,19 @@ class Book {
     }
 }
 
+
+// 4) encapsulated mutability: the represented entity is in memory
+//
+class Book {
+    private final StringBuffer buffer;
+
+    String getTitle() {
+        return this.buffer.toString();
+    }
+
+    Book setTitle(String text) {
+        this.buffer.setLength(0);
+        this.buffer.append(text);
+        return this;
+    }
+}
