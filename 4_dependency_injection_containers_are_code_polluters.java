@@ -5,7 +5,6 @@
 //
 // (good design: dependency injection via constructor)
 public class Budget {
-
     private final DB db;
 
     public Budget(DB database) { // dependency injection via constructor
@@ -17,11 +16,10 @@ public class Budget {
     }
 }
 
-// the client code
+// client code
 public class App {
 
     public static void main(String[] args) {
-
         Budget budget = new Budget(new Postgres("jdbc:postgresql:5740/main"));
         System.out.println("Total is: " + budget.total());
     }
@@ -29,7 +27,6 @@ public class App {
 
 // (bad design: let Budget decide what database it wants to work with)
 public class Budget {
-
     private final DB db = new Postgres("jdbc:postgresql:5740/main"); // a hidden/private knowledge/collaborator
 
     public long total() {
@@ -48,12 +45,11 @@ public class Budget {
 import javax.inject.Inject;
 
 public class Budget {
-
     private final DB db;
 
     @Inject                  // the constructor is annotated with @Inject
     public Budget(DB data) {
-      this.db = data;
+        this.db = data;
     }
 
     public long total() {
