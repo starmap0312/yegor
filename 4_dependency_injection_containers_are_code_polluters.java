@@ -79,3 +79,10 @@ public class App {
 // why is it bad?
 //   additional complexity: adds more lines to the code base, or even more files (ex. XML)
 // use object composition instead
+
+// other incorrect usage of dependency injection containers:
+// 1) Field injection
+// 2) Setter injection
+// 3) Passing injector as a dependency
+// 4) Making injector a global singleton
+
