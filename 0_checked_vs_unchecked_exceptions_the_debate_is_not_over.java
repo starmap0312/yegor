@@ -1,7 +1,8 @@
 // JAVA checked exceptions vs. unchecked exceptions
 //
-//   Object -> Throwable -> Error     -> ...
-//                       -> Exception -> RuntimeException -> NullPointerException
+//   Object -> Throwable -> Error     -> AssertionError                           (unchecked exception)
+//                       -> Exception -> RuntimeException -> NullPointerException (unchecked exception)
+//                                    -> InterruptedException                     (checked exception) 
 //                                    -> ...
 //
 // you can throw everything that is Throwable
