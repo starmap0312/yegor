@@ -17,8 +17,16 @@ package com.jcabi.http;
     public interface Response
         Request back();      // for backtrace to its Request instance
 
+    /* an interface for implementation of anonymous Wire classes */
     public interface Wire    // responsible to construct Response instances
         Response send(...);
+    // ex.
+    // new Wire() {
+    //     @Override
+    //     public Response send(...) {
+    //         return new DefaultResponse(...);
+    //     }
+    // }
 
 package com.jcabi.http.request;
     final class BaseRequest implements Request               // a class is either final or abstract
@@ -55,3 +63,24 @@ package com.jcabi.http.request;
         private static final class BaseURI implements RequestURI { ... }
         private static final class FormEncodedBody implements RequestBody { ... }
         private static final class MultipartFormBody implements RequestBody { ... }
+        // note: the inner classes are "static", as they need not to access members of the Request instance
+
+// Java nested class:
+// 1) why use nested class
+//    a way of logically grouping classes
+//    encapsulation/privacy
+//    readability 
+// 2) non-static vs. static
+//   a nested class is a member of its enclosing class
+//   a) non-static nested classes (inner classes) have access to other members of the enclosing class
+//        even if they are declared private
+//      it can exist only as a field within an instance of the enclosing class
+//      it has direct access to the fields & methods of the instance of the enclosing class
+//   b) static nested classes do not have access to other members of the enclosing class
+//      i.e. it cannot refer directly to instance fields or methods of the instance of its enclosing class
+//
+// Java Anonymous Classes:
+//   anonymous classes enable you to make your code more concise
+//   a) declare and instantiate a class at the same time, without giving it a name
+//   b) use anonymous classes if you need to use a local class only once
+
