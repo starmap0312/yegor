@@ -1,5 +1,4 @@
 // 1) jcabi-http
-// 1.1) class design
 package com.jcabi.http;
     public interface Request  // responsible to construct RequestURI/RequestBody instances and provides Response instance 
         /* the public constant literals related to this interface that can be used by the outside world            */
@@ -35,11 +34,13 @@ package com.jcabi.http.request;
         public Response fetch() throws IOException {         // BaseRequest delegates construction of Response to its wire
             return this.wire.send(this, ...);
         }
-        // note, all the above construction pass the parameter this (as one of its characteristics of the instance)
-        //   so that the receiver of the instances can backtrace to this Request instance
+        // fluent design of classes: single entry point (Request) of creating related/dependent classes
         //   Request -> RequestURI
         //           -> RequestBody
         //           -> Response
+        // note, all the above related classes pass "this" during the construction
+        //   i.e. as one of the characteristics of the instance of the related classes
+        //   so the receiver of the instances can backtrace to its dependent Request instance
         //   ex. Request request = new BaseRequest(new Wire(...));
         //       RequestURI uri = request.uri();      // uri is an instance of BaseRequest.BaseURI
         //       RequestBody body = request.body();   // body is an instance of BaseRequest.FormEncodedBody
