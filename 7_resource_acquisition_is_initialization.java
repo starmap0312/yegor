@@ -69,9 +69,10 @@
 //    ex. in Python,
 //        with open('filename.txt', 'rb') as fin:
 //            content = fin.read()
-//        # the resource (file) is released deterministically outside the context manager
+//        # the resource (file) is acquired/released deterministically via the context manager
 //    ex. in Java,
-//        a class extends AutoClosable has a close() method
+//        class InputStream extends AutoClosable has a close() method
+//        it defines close() method (release resource), which will be called exiting the try construct
 try(InputStream is = new FileInputStream("/etc/passwd")) { // FileInputStream implements AutoCloseable
     int data = is.read();
     while(data != -1){
