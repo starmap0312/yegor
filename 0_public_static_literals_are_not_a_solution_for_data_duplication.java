@@ -1,5 +1,5 @@
 // Public Static Literals Are Not a Solution for Data Duplication
-//   similarly, utility classes with public static methods are also evil
+//   similar to utility classes, they create unbreakable hard-coded dependencies
 //
 // example: Apache Commons defines a public static property: CharEncoding.UTF_8
 
@@ -27,12 +27,28 @@ byte[] byteArray = text.getBytes(CharEncoding.UTF_8);    // convert a String int
 
 // (good design: encapsulate the public constant inside a new class that provides the same service)
 // 1) make a new class that extends String and place the constant data there
-// 2) declare the data as a private (static) property (that's how you get rid of data duplication)
+// 2) declare the data as a private static property (that's how you get rid of data duplication)
 String text = new UTF8String(byteArray); // "UTF-8" constant is encapsulated in class UTF8String extends String
 // but as Java makes class String final, in reality we will have to write this:
 //   in reality UTF8String does not extend String, but provides a method toString() that provides the service
 String text = new UTF8String(byteArray).toString();
+byte[] byteArray = ((UTF8String) text).getBytes();
 // every client need NOT to know how the conversion is done
+public final class UTF8String {
+    private static final String UTF_8 = "UTF-8";
+
+    public UTF8String(final byte[] byteArray) {
+        this.bytes = byteArray;
+    }
+
+    public String toString() {
+        return new String(this.byteArray, UTF_8);
+    }
+
+    public byte[] getBytes() {
+        return this.bytes;
+    }
+}
 
 // why is it good?
 // 1) this decouples the client from the constant string data (i.e. CharEncoding.UTF_8)
