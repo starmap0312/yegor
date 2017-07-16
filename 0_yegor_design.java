@@ -67,17 +67,23 @@ package com.jcabi.http.request;
 
     /* an implementation of interface Request that has its own Wire implementation (declared as static final)    */
     final class JdkRequest implements Request
+        // this Wire instance is declared as private static, so that it is shared by all JdkRequest instances
         private static final Wire WIRE = new Wire() { // JdkRequest has its own Wire implementation for sending requests
-            @Override
-            public Response send(...) {
+            @Override                                 // this annotation enables the check of compiler for overriding 
+            public Response send(...) {               //   you receive a warning if not overriding and it improves readablity
                 return new DefaultResponse(...);
             }
+        }
+        // this Request instance is declared private (non-static)
+        //   so that every JdkRequest instance has its own instance with different coordinates (i.e. uri)
+        private final transient Request base;
+
         public JdkRequest(final String uri) {
             this.base = new BaseRequest(JdkRequest.WIRE, uri); // it uses and delegates functionalities to a BaseRequest
         }
 
     /* an implementation of interface Request that has its own Wire implementation (declared as static final)    */
-    final class ApacheRequest implements Request
+    final class ApacheRequest implements Request      // similar to JdkRequest but uses Apache library for sending requests
 
 // Java nested class:
 // 1) why use nested class
