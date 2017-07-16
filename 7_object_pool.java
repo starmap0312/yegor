@@ -23,13 +23,14 @@
 //       allocating a new object increases the size of the pool
 //    f) in a multithreaded environment
 //       a pool may block the client until another thread releases an object to the pool
-//
+
+// object pool with context manager (in garbage collected languages, i.e. without destructors):
+//   do it manually/explicitly (not recommended)
+//     requesting an object from the factory
+//     returning the object by calling a dispose method
+//   use try/finally construct or context manager (recommended)
+//     using a finalizer is not a good idea as there are no guarantees on when the finalizer will be run
+
 // object pool with smart pointers, ex. C++: smart pointers
 //   in the constructor of the smart pointer, an object can be requested from the pool
 //   in the destructor of the smart pointer, the object can be released back to the pool
-// object pool for garbage collected languages (no destructors):
-//   do it manually/explicitly
-//     requesting an object from the factory
-//     returning the object by calling a dispose method
-//   use with try/finally construct or context manager
-//     using a finalizer is not a good idea as there are no guarantees on when the finalizer will be run
