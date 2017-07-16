@@ -71,5 +71,12 @@
 //            content = fin.read()
 //        # the resource (file) is released deterministically outside the context manager
 //    ex. in Java,
-//        a class extends AutoClosable needs to define a close() method
+//        a class extends AutoClosable has a close() method
+try(InputStream is = new FileInputStream("/etc/passwd")) { // FileInputStream implements AutoCloseable
+    int data = is.read();
+    while(data != -1){
+        System.out.print((char) data);
+        data = is.read();
+    }
+}
 
