@@ -1,12 +1,11 @@
 // An Empty Line is a Code Smell
-//   an empty line in a method is used for separation of concerns
-//   but a method should always do one thing:
-//     refactor the code, so that there is no empty line in a method
+// 1) an empty line in a method is used for separation of concerns
+// 2) a method should always do one thing:
+//    so refactor the code, so that there is no empty line in a method
 //
 // example:
 //
 // (bad design)
-
 final class TextFile {
 
     private final File file;
@@ -17,6 +16,7 @@ final class TextFile {
 
     public int grep(Pattern regex) throws IOException {
         Collection<String> lines = new LinkedList<>();
+        // in grep() method, we try to do two things: read lines from a file & count the number of lines matching a pattern
         try (BufferedReader reader = new BufferedReader(new FileReader(this.file))) {
             while (true) {
                 String line = reader.readLine();
@@ -25,7 +25,7 @@ final class TextFile {
                 }
                 lines.add(line);
             }
-        } // we need an empty line, because the method try to do another thing
+        } // here, we may use an empty line, because the method tries to do another thing
 
         int total = 0;
         for (String line : lines) {
@@ -48,9 +48,9 @@ final class TextFile {
         this.file = src;
     }
 
-    public int grep(Pattern regex) throws IOException { // combining the two things
-        return this.count(this.lines(), regex);
-    }
+    public int grep(Pattern regex) throws IOException { // refactor the method so that it contains a single line
+        return this.count(this.lines(), regex);         // the two things are refactored to two private methods, and 
+    }                                                   // the empty line is removed
 
     private int count(Iterable<String> lines, Pattern regex) { // count the number of lines matching the pattern
         int total = 0;
@@ -84,12 +84,12 @@ final class TextFile {
 .container {
     width: 80%;
     margin-left: auto;
-    margin-right: auto; // there is an empty line following
+    margin-right: auto; // there is an empty line here
 
     font-size: 2em;
     font-weight: bold;
 }
-// .container class is too complex and has to be decomposed into two classes
+// .container class is too complex and can be decomposed into two classes
 
 // (good design)
 
