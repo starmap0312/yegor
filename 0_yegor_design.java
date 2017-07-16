@@ -65,6 +65,20 @@ package com.jcabi.http.request;
         private static final class MultipartFormBody implements RequestBody { ... }
         // note: the inner classes are "static", as they need not to access members of the Request instance
 
+    /* an implementation of interface Request that has its own Wire implementation (declared as static final)    */
+    final class JdkRequest implements Request
+        private static final Wire WIRE = new Wire() { // JdkRequest has its own Wire implementation for sending requests
+            @Override
+            public Response send(...) {
+                return new DefaultResponse(...);
+            }
+        public JdkRequest(final String uri) {
+            this.base = new BaseRequest(JdkRequest.WIRE, uri); // it uses and delegates functionalities to a BaseRequest
+        }
+
+    /* an implementation of interface Request that has its own Wire implementation (declared as static final)    */
+    final class ApacheRequest implements Request
+
 // Java nested class:
 // 1) why use nested class
 //    a way of logically grouping classes
