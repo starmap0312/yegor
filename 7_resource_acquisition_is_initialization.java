@@ -65,5 +65,11 @@
 //    they will live indeterminately long
 //    even if collected (by garbage collection), destruction time and order will be non-deterministic
 // 5) context manager (i.e. with statement) has nothing to do with scoping
-//    ex. in Java, a class that extends AutoClosable defines a close() method
 //    it is deterministic cleanup, so it overlaps with RAII in the ends, but not in the means
+//    ex. in Python,
+//        with open('filename.txt', 'rb') as fin:
+//            content = fin.read()
+//        # the resource (file) is released deterministically outside the context manager
+//    ex. in Java,
+//        a class extends AutoClosable needs to define a close() method
+
