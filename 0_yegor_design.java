@@ -78,8 +78,12 @@ package com.jcabi.http.request;
         //   so that every JdkRequest instance has its own instance with different coordinates (i.e. uri)
         private final transient Request base;
 
-        public JdkRequest(final String uri) {
-            this.base = new BaseRequest(JdkRequest.WIRE, uri); // it uses and delegates functionalities to a BaseRequest
+        public JdkRequest(final URI uri) {                     // secondary constructor which uses the primary constructor
+            this(uri.toString());
+        }
+
+        public JdkRequest(final String uri) {                  // primary constructor
+            this.base = new BaseRequest(JdkRequest.WIRE, uri); // it uses and delegates responsibilities to a BaseRequest
         }
 
     /* an implementation of interface Request that has its own Wire implementation (declared as static final)    */
