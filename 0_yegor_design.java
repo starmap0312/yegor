@@ -29,7 +29,7 @@ package com.jcabi.http;
     // }
 
 package com.jcabi.http.request;
-    final class BaseRequest implements Request               // a class is either final or abstract
+    final class BaseRequest implements Request {             // a class is either final or abstract
         private static final String ENCODING = "UTF-8";      // constant used in this class (hidden information)
 
         BaseRequest(final Wire wire, ...) { ... }            // the class's collaborator (Wire) is passed in by constructor
@@ -69,18 +69,19 @@ package com.jcabi.http.request;
         private static final class MultipartFormBody implements RequestBody { ... }
         // note: the inner classes are "static", as they need not to access members of the Request instance
 
-        // a BaseRequest uses method() method to set its method, the method returns a new BaseRequest with new method 
+        // used to set Request's this.method, it returns a new BaseRequest with new http method 
         public Request method(final String method) {
             return new BaseRequest(..., method, ...);
         }
 
-        // a BaseRequest uses through() method to decorate its Wire, the method returns a new BaseRequest with decorated
+        // used to decorate this.wire, it returns a new BaseRequest with a decorated Wire
         public <T extends Wire> Request through(final Class<T> type) { // pass in a Wire decorator (implements Wire)
             return new BaseRequest(decoratedWire, ...);
         }
+    }
 
     /* an implementation of interface Request that has its own Wire implementation (declared as static final)    */
-    final class JdkRequest implements Request
+    final class JdkRequest implements Request {
         // this Wire instance is declared as private static, so that it is shared by all JdkRequest instances
         private static final Wire WIRE = new Wire() { // JdkRequest has its own Wire implementation for sending requests
             @Override                                 // this annotation enables the check of compiler for overriding 
@@ -99,9 +100,27 @@ package com.jcabi.http.request;
         public JdkRequest(final String uri) {                  // primary constructor
             this.base = new BaseRequest(JdkRequest.WIRE, uri); // it uses and delegates responsibilities to a BaseRequest
         }
+    }
 
     /* an implementation of interface Request that has its own Wire implementation (declared as static final)    */
-    final class ApacheRequest implements Request      // similar to JdkRequest but uses Apache library for sending requests
+    final class ApacheRequest implements Request {    // similar to JdkRequest but uses Apache library for sending requests
+
+    }
+
+    /* a default implementation of interface Response */
+    public final class DefaultResponse implements Response {
+    
+        public DefaultResponse(final Request request, ...) {
+            this.req = request;                              // used by back() method to trace back to its Request
+        }
+
+        public Request back() { return this.req; }
+
+        // wraps itself into another decorator, ex. response.as(XMLResponse.class)
+        public <T extends Response> T as(final Class<T> type) {
+            return type.getDeclaredConstructor(Response.class).newInstance(this);
+        }
+    }
 
 // Java nested class:
 // 1) why use nested class
@@ -122,3 +141,40 @@ package com.jcabi.http.request;
 //   a) declare and instantiate a class at the same time, without giving it a name
 //   b) use anonymous classes if you need to use a local class only once
 
+package com.jcabi.http.wire; // a package of Wire decorator (all implements Wire interface)
+    public final class VerboseWire implements Wire { // the decorator implements the same interface as the decoratee
+        private final transient Wire origin;         // the original Wire to be decorated
+
+        public VerboseWire(final Wire wire) {
+            this.origin = wire;
+        }
+
+        @Override
+        public Response send(...) { ... }            // add additional responsibilities besides this.origin.send() 
+    }
+
+package com.jcabi.http.response;
+
+    abstract class AbstractResponse implements Response {
+
+        private final transient Response response;
+
+        AbstractResponse(final Response resp) {
+            this.response = resp;
+        }
+
+        @Override
+        public final Request back() { return this.response.back(); } // direct delegation
+
+        @Override                                                    // direct delegation
+        public final <T extends Response> T as(final Class<T> type) { return this.response.as(type); }
+    }
+
+    public final class XMLResponse extends AbstractResponse {        // inherit all responsibilities from AbstractResponse
+
+        public XMLResponse(final Response resp) { ... }              // decorates a Response
+
+        public XML xml() {                                           // add an additional responsibility
+            return new XMLDocument(this.body()).merge(this.context());
+        }
+    }
