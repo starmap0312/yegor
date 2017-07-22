@@ -75,7 +75,7 @@ package com.jcabi.http.request;
         }
 
         // a BaseRequest uses through() method to decorate its Wire, the method returns a new BaseRequest with decorated
-        public <T extends Wire> Request through(final Class<T> type) {
+        public <T extends Wire> Request through(final Class<T> type) { // pass in a Wire decorator (implements Wire)
             return new BaseRequest(decoratedWire, ...);
         }
 
