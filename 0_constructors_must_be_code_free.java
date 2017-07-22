@@ -1,11 +1,10 @@
 // Constructors Must Be Code-Free
-//   don't do computations inside a constructor and then encapsulate results
-//     the only allowed statement inside a constructor is an assignment
-//   it prevents composition of objects and makes them un-extensible
-//
-// example: an interface that represents a name of a person
+// don't do computations inside a constructor and then encapsulate the results
+//   the only allowed statement inside a constructor is an assignment
+// it prevents composition of objects and makes them un-extensible
 
-interface Name {
+// example: an interface that represents a name of a person
+public interface Name {
     String first();
 }
 
@@ -24,14 +23,14 @@ public final class EnglishName implements Name {
     }
 }
 // why is it bad?
-//   the object is similar to an imperative utility method
-//     in imperative programming, we do all calculations right now and return fully ready results
-//       i.e. when EnglishName is instantiated, it's first name is computed immediately and ready for access
-//     in declarative programming, we instead try to delay calculations for as long as possible
-//       i.e. when EnglishName is instantiated, it's first name computation is delayed until accessed
-//   we are abusing the new operator (object construction) and turning it into a static method
-//     i.e. it does the calculations for us right now
-//
+// 1) the object is similar to an imperative utility method
+//    in imperative programming, we do all calculations right now and return fully ready results
+//      i.e. when EnglishName is instantiated, it's first name is computed immediately and ready for access
+//    but in declarative programming, we try to delay calculations for as long as possible
+//      i.e. when EnglishName is instantiated, it's first name computation is delayed until accessed
+// 2) moreover, we are abusing the new operator (object construction) and turning it into a static method
+//    it does the calculations for us right now
+
 // (good design)
 public final class EnglishName implements Name {
 

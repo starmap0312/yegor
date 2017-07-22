@@ -30,6 +30,10 @@ package com.jcabi.http;
 
 package com.jcabi.http.request;
     final class BaseRequest implements Request               // a class is either final or abstract
+        private static final String ENCODING = "UTF-8";      // constant used in this class (hidden information)
+
+        BaseRequest(final Wire wire, ...) { ... }            // the class's collaborator (Wire) is passed in by constructor
+
         public RequestURI uri() {                            // BaseRequest provides its own RequestURI implementation
             return new BaseRequest.BaseURI(this, ...);
         }
@@ -42,7 +46,7 @@ package com.jcabi.http.request;
         public Response fetch() throws IOException {         // BaseRequest delegates construction of Response to its wire
             return this.wire.send(this, ...);
         }
-        // fluent design of classes: single entry point (Request) of creating related/dependent classes
+        // fluent design: single entry point (Request) for creating related/dependent classes (RequestURI/Response)
         //   Request -> RequestURI
         //           -> RequestBody
         //           -> Response
@@ -64,6 +68,16 @@ package com.jcabi.http.request;
         private static final class FormEncodedBody implements RequestBody { ... }
         private static final class MultipartFormBody implements RequestBody { ... }
         // note: the inner classes are "static", as they need not to access members of the Request instance
+
+        // a BaseRequest uses method() method to set its method, the method returns a new BaseRequest with new method 
+        public Request method(final String method) {
+            return new BaseRequest(..., method, ...);
+        }
+
+        // a BaseRequest uses through() method to decorate its Wire, the method returns a new BaseRequest with decorated
+        public <T extends Wire> Request through(final Class<T> type) {
+            return new BaseRequest(decoratedWire, ...);
+        }
 
     /* an implementation of interface Request that has its own Wire implementation (declared as static final)    */
     final class JdkRequest implements Request

@@ -10,10 +10,12 @@
 // collaborator
 // 1) if Object A requires Object B to provide some advertised service, then
 //    Object B becomes the collaborator of Object A
-//    ex. ApacheRequest requires a Wire to send its request
-// 2) Object B (collaborator) should NOT be an attribute (private field) of Object A, instead
-//    Object B can be a parameter supplied to Object A's service method (dependency injection), or
-//    Object B can be a local variable of Object A's service method (hidden information) 
+//    ex. BaseRequest requires a Wire to send its request (passed in as constructor's parameter)
+//        ApacheRequest requires a BaseRequest to send its requrest (declared as a private field initialized in constructor)
+// 2) Object B (collaborator) is a private field of Object A, passed in as constructor's parameter (NOT GOOD)
+//    Object B (collaborator) is a private field of Object A, initialized in constructor           (NOT GOOD)
+//    Object B is a parameter supplied to Object A's service method (dependency injection)         (GOOD)
+//    Object B is a local variable of Object A's service method (hidden information)               (GOOD) 
 // 3) minimize the number of collaborators, as they introduce coupling of objects
 //
 // class
