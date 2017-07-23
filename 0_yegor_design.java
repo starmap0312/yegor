@@ -178,3 +178,7 @@ package com.jcabi.http.response;
             return new XMLDocument(this.body()).merge(this.context());
         }
     }
+
+    public final class JsonResponse extends AbstractResponse {
+
+    }
