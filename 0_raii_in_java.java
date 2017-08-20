@@ -1,7 +1,8 @@
 // RAII (Resource Acquisition Is Initialization)
 //   it is used for exception-safe resource management
 //
-// example: problem of resource leakage if no RAII
+// example: no resource management for exceptions
+// i.e. there is a problem of resource leakage if no RAII
 class Foo {
 
     private Semaphore semaphore = new Semaphore(5);
@@ -16,8 +17,8 @@ class Foo {
     }
 }
 
-// (bad design)
-// explicit release the resource (semaphore) when exception occurs 
+// (bad design: code duplication of resource release)
+// i.e. explicitly release the resource (semaphore) when exception occurs 
 class Foo {
 
     private Semaphore semaphore = new Semaphore(5);
@@ -33,10 +34,12 @@ class Foo {
     }
 }
 // why is it bad?
-//   code duplication: release the resource at multiple places of the code
+// 1) code duplication: release the resource at multiple places of the code
+// 2) hard to manage the code if there are multiple places for releasing the resource
 
 // (good design)
-// use of RAII: acquire & release the resource at one place (resource class's constructor & destructor)
+// use of RAII: acquire & release the resource at one place
+// i.e. acquire and release the resource at the class's constructor & destructor
 class Resource {
 
     private Semaphore semaphore;
@@ -47,7 +50,7 @@ class Resource {
     }
 
     @Override
-    public void finalize() { // release the resource in finalize() method, which will be called during desctruction
+    public void finalize() { // release the resource during desctruction
         this.semaphore.release();
     }
 }
@@ -68,8 +71,7 @@ class Foo {
 //   Java is a garbage collection language, so we do not know when the resource object will be desctructed
 
 // (solution)
-// use of try-with-resource statement
-
+// use try-with-resource statement and define the reource release at the close() method
 class Resource implements Closeable {
 
     private Semaphore semaphore;
@@ -90,7 +92,7 @@ class Foo {
     private Semaphore semaphore = new Semaphore(5);
 
     void print(int x) throws Exception {
-        try (Resource resource = new Resource(this.semaphore)) {
+        try (Resource resource = new Resource(this.semaphore)) { // use of try-with-resource statement
             if (x > 1000) {
                 throw new Exception("Too large!");
             }
@@ -99,5 +101,8 @@ class Foo {
     }
 }
 // why is it good?
-// 1) resource acquirsition and release is defined at one place: resource class's constructor & destructor
-// 2) use try-with-resource statement to make the resource's close() method explicitly called when exiting the scope
+// 1) without the try-with-resource statement, we are not sure when an Object's finalize() method will be called 
+//    define the release of a resource in the close() method (must implement the Closable/AutoClosable interfaces)
+// 2) resource acquirsition and release is still defined at one place/class
+//    resource class's constructor & close() method
+// 3) use try-with-resource statement to make the resource's close() method explicitly called when exiting the scope
