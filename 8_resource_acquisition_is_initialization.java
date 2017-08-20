@@ -1,17 +1,34 @@
 // Resource Acquisition Is Initialization (RAII)
 // 1) resource allocation (acquisition) is done during object creation by the constructor
 //    resource deallocation (release) is done by the destructor
-//    ex. in C++, an instance's local variables allow easy management of multiple resources
-//        local variables are destroyed in the reverse order of construction
+//    (C++)
+//      an instance's local variables allow easy management of multiple resources
+//      local variables are destroyed in the reverse order of construction
+//    (Java/Python) 
+//      Java does not have destructor
+//      because Java is a garbage collected language you cannot predict when an object will be destroyed
+//      1.1) finalize() method:
+//           a method of Object class, invoked before an object is discarded by the garbage collector
+//           use finalize() only for sanity checking
+//           it is called automatically when an object is picked up by the garbage collector, so 
+//             do not use it for non-memory resources, because you do not know when the release will take place
+//           it allows an object to clean up its state at destruction
+//      1.2) try/catch/finally construct
+//           for classes that need to explicitly tidy up, the convention is to define a close() method
+//             then close() method is automatically called when exiting a try/catch/finally construct
+//           used to explicitly close/release a non-memory resource, or cleaning up/logging
+//             ex. closing a FileStream, I/O stream objects, Database connections, HTTP connections, etc.
+//           you explicitly release a non-memory resource when you are done with using that resource
 // 2) RAII means:
-//      holding a resource in a class invariant (private variable/field), which is tied to the object's lifetime
+//      holding a resource as a class invariant (i.e. private field), which is tied to the object's lifetime
 //    this ensures that:
 //      if there are no object leaks, then there will be no resource leaks
 // 3) RAII advantages:
 //    RAII greatly simplifies resource management
 //      it reduces the code size and helps ensure program correctness
 //    RAII provides encapsulation (resource allocation)
-//      resource management logic is defined once in the class, not at each call site (ex. context manager)
+//      resource management logic is defined once in the class, not at each call site
+//      ex. context manager or try/catch/finally construct
 //    RAII provides exception safety for stack resources
 //      a) if an exception is thrown and proper exception handling is in place
 //         the only code that will be executed when exiting the current scope are the destructors of objects
