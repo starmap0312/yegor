@@ -5,12 +5,11 @@
 //      an instance's local variables allow easy management of multiple resources
 //      local variables are destroyed in the reverse order of construction
 //    (Java/Python) 
-//      Java does not have destructor
 //      because Java is a garbage collected language you cannot predict when an object will be destroyed
 //      1.1) finalize() method:
-//           a method of Object class, invoked before an object is discarded by the garbage collector
+//           Java's destructor called by the garbage collector
+//             a method of Object class, invoked when an object is picked by the garbage collector
 //           use finalize() only for sanity checking
-//           it is called automatically when an object is picked up by the garbage collector, so 
 //             do not use it for non-memory resources, because you do not know when the release will take place
 //           it allows an object to clean up its state at destruction
 //      1.2) try/catch/finally construct
@@ -19,6 +18,8 @@
 //           used to explicitly close/release a non-memory resource, or cleaning up/logging
 //             ex. closing a FileStream, I/O stream objects, Database connections, HTTP connections, etc.
 //           you explicitly release a non-memory resource when you are done with using that resource
+//      1.3) try([allocation of resource]) { ... use of resource ... } statement
+//           resource must implement Closable, and it's close() method will be called when exiting scope { ... }
 // 2) RAII means:
 //      holding a resource as a class invariant (i.e. private field), which is tied to the object's lifetime
 //    this ensures that:
