@@ -27,7 +27,7 @@ class Foo {
         this.semaphore.acquire();
         if (x > 1000) {
             this.semaphore.release();          // need to release the resource when exception occurs
-            throw new Exception("Too large!");
+            throw new Exception("Too large!"); // no exception safety if engineer forgets to write the release code
         }
         System.out.printf("x = %d", x);
         this.semaphore.release();              // need to release the resource as well when execution is correct 
@@ -62,7 +62,7 @@ class Foo {
 
     void print(int x) throws Exception {
         new Resource(this.semaphore); // resource is automatically acquired at construction and released at destruction
-        if (x > 1000) {
+        if (x > 1000) {               // it provides exception safety when garbage collector deconstructs the resource 
             throw new Exception("Too large!");
         }
         System.out.printf("x = %d", x);
@@ -75,7 +75,7 @@ class Foo {
 // use try-with-resource statement and define the reource release at the close() method
 class Resource implements Closeable { // the resource class implements Closable/AutoClosable interface
 
-    private Semaphore semaphore;
+    private Semaphore semaphore;  // hold a resource as a private field (class invariant)
 
     Resource(Semaphore sem) {     // acquire the resource during construction
         this.semaphore = sem;

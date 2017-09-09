@@ -6,19 +6,20 @@
 //      local variables are destroyed in the reverse order of construction
 //    (Java/Python) 
 //      because Java is a garbage collected language you cannot predict when an object will be destroyed
-//      1.1) finalize() method:
-//           Java's destructor called by the garbage collector
+//      1.1) use finalize() method:
+//           it is the Java's destructor called by the garbage collector
 //             a method of Object class, invoked when an object is picked by the garbage collector
-//           use finalize() only for sanity checking
+//           use finalize() only for sanity checking, not resource management (especially for non-memory resources)
 //             do not use it for non-memory resources, because you do not know when the release will take place
+//             otherwise, you will have memory leak or lock of files, etc.
 //           it allows an object to clean up its state at destruction
-//      1.2) try/catch/finally construct
+//      1.2) use try/catch/finally construct (context-management)
 //           for classes that need to explicitly tidy up, the convention is to define a close() method
 //             then close() method is automatically called when exiting a try/catch/finally construct
 //           used to explicitly close/release a non-memory resource, or cleaning up/logging
 //             ex. closing a FileStream, I/O stream objects, Database connections, HTTP connections, etc.
 //           you explicitly release a non-memory resource when you are done with using that resource
-//      1.3) try([allocation of resource]) { ... use of resource ... } statement
+//      1.3) use try([allocation of resource]) { ... use of resource ... } statement
 //           resource must implement Closable, and it's close() method will be called when exiting scope { ... }
 // 2) RAII means:
 //      holding a resource as a class invariant (i.e. private field), which is tied to the object's lifetime
