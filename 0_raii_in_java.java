@@ -26,35 +26,36 @@ class Foo {
     void print(int x) throws Exception {
         this.semaphore.acquire();
         if (x > 1000) {
-            this.semaphore.release();
+            this.semaphore.release();          // need to release the resource when exception occurs
             throw new Exception("Too large!");
         }
         System.out.printf("x = %d", x);
-        this.semaphore.release();
+        this.semaphore.release();              // need to release the resource as well when execution is correct 
     }
 }
 // why is it bad?
 // 1) code duplication: release the resource at multiple places of the code
 // 2) hard to manage the code if there are multiple places for releasing the resource
 
-// (good design)
+// (good design: but not a working solution in Java)
 // use of RAII: acquire & release the resource at one place
 // i.e. acquire and release the resource at the class's constructor & destructor
 class Resource {
 
     private Semaphore semaphore;
 
-    Resource(Semaphore sem) { // acquire the resource during construction
+    Resource(Semaphore sem) { // acquire resource during construction
         this.semaphore = sem;
         this.semaphore.acquire();
     }
 
     @Override
-    public void finalize() { // release the resource during desctruction
+    public void finalize() {  // release resource during desctruction (destructor called by garbage collector)
         this.semaphore.release();
     }
 }
 
+// the client code
 class Foo {
 
     private Semaphore semaphore = new Semaphore(5);
@@ -67,26 +68,27 @@ class Foo {
         System.out.printf("x = %d", x);
     }
 }
-// what is the problem:
+// what is the problem?
 //   Java is a garbage collection language, so we do not know when the resource object will be desctructed
 
 // (solution)
 // use try-with-resource statement and define the reource release at the close() method
-class Resource implements Closeable {
+class Resource implements Closeable { // the resource class implements Closable/AutoClosable interface
 
     private Semaphore semaphore;
 
-    Resource(Semaphore sem) {
+    Resource(Semaphore sem) {     // acquire the resource during construction
         this.semaphore = sem;
         this.semaphore.acquire(); // acquire the resource (semaphore)
     }
 
     @Override
-    public void close() {
+    public void close() {         // release the resource via explicit call of the close() method, or iva context-manager
         this.semaphore.release(); // release the resource (semaphore)
     }
 }
 
+// client
 class Foo {
 
     private Semaphore semaphore = new Semaphore(5);
@@ -97,7 +99,7 @@ class Foo {
                 throw new Exception("Too large!");
             }
             System.out.printf("x = %d", x);
-        }
+        } // the close() method will be explicitly called when exiting the scope, either exception occurs or a normal exit
     }
 }
 // why is it good?
