@@ -6,14 +6,14 @@
 //    data within an object should be invisible to other objects and stays within the object the whole time
 //
 // OOP principle: encapsulation
-// 1) hide data behind objects
+// 1) hide data behind objects (data/information hiding)
 //    i.e. data must not be visible
 // 2) objects only have access to data they encapsulate and never to data encapsulated by other objects
 //
 // example: use of DTO to transfer data between two pieces of code
 //
 // (bad design)
-Book loadBookById(int id) {              // a procedure to load data from RESTful API
+Book loadBookById(int id) {                // a procedure to load data from RESTful API
     JsonObject json = /* Load it from RESTful API */
     Book book = new Book();                // store data in a dumb object (Data Transfer Object)
     book.setISBN(json.getString("isbn"));  // book object allows others to set its data
@@ -22,17 +22,16 @@ Book loadBookById(int id) {              // a procedure to load data from RESTfu
     return book;
 }
 
-Book book = api.loadBookById(123);
-
-void saveNewBook(Book book) {          // data object is transferred to a procedure to be saved in database
+void saveNewBook(Book book) {              // data object is transferred to a procedure to be saved in database
     Statement stmt = connection.prepareStatement("INSERT INTO book VALUES (?, ?, ?)");
-    stmt.setString(1, book.getISBN());   // violates the priciple, data are visible by database object
-    stmt.setString(2, book.getTitle());  // the database object has access to the Book objet
+    stmt.setString(1, book.getISBN());     // violates the priciple, data are visible by database object
+    stmt.setString(2, book.getTitle());    // the database object has access to the Book objet
     stmt.setString(3, book.getAuthor());
     stmt.execute();
 }
 
-database.saveNewBook(book);
+Book book = api.loadBookById(123);         // creates a dump object (DTO) for transferring data
+database.saveNewBook(book);                // once database receives the dump object (DTO), it extracts and saves the data to DB
 // why is it bad?
 //   the Book object is dumb, existing only for transfering data between two procedures
 //   it is a passive data structure
@@ -47,12 +46,10 @@ class Api {
     }
 }
 
-Book book = api.bookById(123);
-
 class JsonBook {
     // a class that actively saves its content to database
     void save(Database db) {    // ask the Book object actively save its content to database
-        JsonObject json = /* Load it from RESTful API */    // data are loaded when on demand
+        JsonObject json = /* Load it from RESTful API */    // data are loaded when on demand (lazy)
         db.createBook(          // the data stays inside the object and are invisble to outside objects
             json.getString("isbn"),
             json.getString("title"),
@@ -61,7 +58,8 @@ class JsonBook {
     }
 }
 
-book.save(database);
+Book book = api.bookById(123); // creates an active Book object
+book.save(database);           // the Book object saves its content to DB, without exposing its data to other objects
 // why is it good?
 // 1) the book object is no longer a passive data bag 
 //    it provides services: actively saving its content to database
