@@ -47,11 +47,11 @@ class AmazonS3Client {
 //    ex. Bucket, Object, Version, Policy, etc. objects with functionality of real buckets, objects and versions
 //        which the AWS S3 expose
 // 2) create a high-level object that somehow represents the entire API/server, but it should be small
-//    ex. Region object represents the entire AWS region with buckets
-//        we could retrieve a bucket from it
-//        to list objects in the bucket we ask the bucket to do it for us
-//        there is no need to communicate with the entire "server object" every time
-//          even though technically such a communication happens
+//    ex. create Region object to represent the entire AWS region with buckets
+//        use Region object to retrieve a bucket
+//        use Bucket object to list objects in the bucket
+//        no need to communicate with the entire "server object" every time (although technically such communication happens)
+//    ex. jcabi-github
 //
 // summary
 // the trouble is not exactly in the name suffix, but in that the client object represents the entire server
