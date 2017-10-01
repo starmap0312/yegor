@@ -24,6 +24,39 @@
 //    like the TCP stack which abstracts the mechanics of reliably delivering bytes between network endpoints,
 //      the service mesh abstracts the mechanics of reliably delivering requests between services
 //    Unlike the TCP, the service mesh can provide a uniform visibility and control into the application at runtime
+//
+//    TCP:
+//      ComputerA             ComputerB
+//      ----------------      ----------------
+//      ServiceA          --  ServiceB
+//      Networking Stack  --  Networking Stack
+//
+//    Serivce Library: (reusability of the library)
+//      ComputerA                ComputerB
+//      ----------------         ----------------
+//      ServiceA             --  ServiceB
+//      Library                  Library
+//       [circuit-breaker]        [circuit-breaker]
+//       [service discovery]      [service discovery]
+//      Networking Stack     --  Networking Stack
+//
+//    drawbacks of using a Service Library:
+//    i ) we need to re-deploying all services whenbever the library is updated
+//    ii) the library is written in a specific language (ex. Java) and runs on a specific platform (ex. JVM)
+//
+//    Service Proxy: (transparent to the application)
+//      ComputerA                            ComputerB
+//      -------------------------------      -------------------------------
+//      ServiceA -- Proxy (Sidecar)      --  Proxy (Sidecar)        ServiceB
+//                  [circuit-breaker]        [circuit-breaker]
+//                  [service discovery]      [service discovery]
+//      Networking Stack                 --  Networking Stack
+//
+//    Service Proxy:
+//      each of your services will have a companion proxy sidecar (a micro-service)
+//      it runs aside your application and provides the service with extra features
+//      the engineers can work on the business logic instead of the services infrastructure code
+//    
 // 4) reliably delivering requests in a cloud native application is incredibly complex
 //    it may use  a wide array of powerful techniques: 
 //    ex. circuit-breaking, latency-aware load balancing, consistent (advisory) service discovery, retries, and deadlines
