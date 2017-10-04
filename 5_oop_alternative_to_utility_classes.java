@@ -1,7 +1,7 @@
 // OOP Alternative to Utility Classes
 //   utility classes are not proper objects
 //   ex. StringUtils, IOUtils, FileUtils (Apache Commons), Iterables, Iterators (Guava), Files (JDK7)
-//   inherited from procedural programming (a functional decomposition paradigm)
+//   they inherited from procedural programming (a functional decomposition paradigm)
 //
 // example: a utility method max() for selecting the maximum value of two
 //
