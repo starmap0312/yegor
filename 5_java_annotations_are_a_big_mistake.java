@@ -5,7 +5,6 @@
 // 2) they tear objects apart and keeping parts in different places
 //    ex. containers, sessions, managers, controllers
 //
-//
 // example: @Inject
 //
 // (bad design: annotate a property with @Inject)
@@ -46,7 +45,6 @@ class Books {
     // some methods here, which use this.db
 }
 
-
 // example: @XmlElement
 //
 // (bad design)
@@ -77,7 +75,6 @@ marshaller.marshal(book, System.out);
 // 1) it is not the book instance that creates the XML. it's someone else, outside of the class Book
 // 2) the control is lost (not inverted, but lost!)
 // 3) the object is not in charge any more: it can't be responsible for what's happening to it
-//   
 //   
 // (good design: use decorators instead)
 class DefaultBook implements Book { // the default class has no idea about XML
@@ -172,7 +169,6 @@ class DefaultBook implements Book {
 // drawback:
 //   consider to use decorator class when the functionalities grow
 //
-//
 // example: @RetryOnFailure
 //
 // (bad design: use annotation)
@@ -219,7 +215,7 @@ class FooThatRetries implements Foo {
     }
 
     public String load(URL url) {
-        return new Retry().eval(
+        return new Retry().eval(                 // create a Retry object for retrying the decoratee's load() method
             new Retry.Algorithm<String>() {
                 @Override
                 public String eval() {
@@ -227,6 +223,23 @@ class FooThatRetries implements Foo {
                 }
             }
         );
+    }
+}
+
+class Retry {
+
+    public <T> T eval(Retry.Algorithm<T> algo) { // a Retry object's eval() will infinitely try the passed-in Algorithm
+        while (true) {
+            try {
+                return algo.eval();
+            } catch (Exception ex) {
+                // ignore it
+            }
+        }
+    }
+
+    interface Algorithm<T> {
+        T eval();
     }
 }
 
