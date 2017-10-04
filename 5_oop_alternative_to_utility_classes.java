@@ -20,8 +20,8 @@ int max = NumberUtils.max(10, 5);
 
 // (good design: object-oriented programming)
 // 1) instantiate and compose objects: let them manage data when and how they desire
-// 2) instead of calling supplementary static functions, we should create objects that are capable of
-//    exposing the behavior we are seeking
+// 2) instead of calling supplementary static functions (utility methods), we should create objects that are
+//    capable of exposing the behavior we are seeking
 //    ex. create Max objects responsible for selecting maximum value of its two values
 public class Max implements Number {
 
@@ -65,21 +65,20 @@ void transform(File in, File out) {
 }
 
 // 1) class FileLines implements Collection<String>:
-//      encapsulates all file reading and writing operations
-//      i.e. behaves exactly as a collection of strings and hides all I/O operations
-//           when we iterate() it, a file is being read
-//           when we addAll() to it, a file is being written
+//    it behaves exactly as a collection of strings and hides all I/O operations
+//    it encapsulates all file reading and writing operations
+//      when we iterate() it, a file is being read
+//      when we addAll() to it, a file is being written
 // 2) class Trimmed implements Collection<String>:
-//      every time the next line is retrieved, it gets trimmed
-//      works as a decorator class
+//    every time the next line is retrieved, it gets trimmed
+//    it works as a decorator class
 // 3) class UnicodeFile implements FILE:
-//      reads and writes files as unicode encoding
+//    it reads and writes files as unicode encoding
 // 4) advantages:
-//      every class has only one responsibility, following the single responsibility principle
-//      easier to develop, maintain and unit-test classes
-//      declarative: enables lazy execution, i.e. the file is not read until its data is required
-//        the whole task starts only after we call addAll()
-
+//    every class has only one responsibility, following the single responsibility principle
+//    it is easier to develop, maintain and unit-test classes
+//    it is declarative: i.e. lazy execution, the file is not read until its data is required
+//      the whole task starts only after we call addAll()
 
 // another example: a utility method readWords() for reading words from a file
 //
@@ -96,8 +95,8 @@ class FileUtils {
     }
 }
 // why is it bad?
-//   because the utility method readWords() is responsible for too many things, to test it
-//   we need to prepare a file for it to read and debug the code if the result is not what we expect
+//   the utility method readWords() is responsible for too many things
+//   to test it we need to prepare a file for it to read and debug the code if the result is not what we expect
 //
 // (good design: distribute the responsibilities to different objects)
 // Step 1: turn the utility method into a class
@@ -121,7 +120,7 @@ class Words implements Iterable<String> {
     }
 }
 // why is it bad?
-//   the class is responsible for too many things
+//   the class is still responsible for too many things
 
 // Step 2: refactor the class and distribute its responsibilities to other objects
 class Text {
