@@ -3,22 +3,22 @@
 //    i.e. most of the code should be written entirely in terms of interfaces, ex. not HashMap but Map interface
 // 2) it creates tight coupling between derived classes and base class 
 //    (modifying base class may affect derived classes)
-// 3) abstraction inherience is OK, whereas implementation inherience is EVIL
+// 3) abstraction inheritence is OK, whereas implementation inheritence is EVIL
 //
 // inheritence/subtyping/subclassing itself is not evil, it enables polymorphism
 //   it derives a characteristic from a base object
-//   ex. MallardDuck (subclass) is a type of Duck (superclass): Duck should be able to quack() and fly()
+//   ex. MallardDuck (subclass) is a subtype of Duck (superclass)
+//       Duck should be able to quack() and fly()
 //
 // example
 //
 // (good design: abstraction inheritance)
 //
-//   Article inherits all characteristics of objects in class Manuscript and adds its own
-
-interface Manuscript { // print() is a characteristic of Manuscript objects
+interface Manuscript {                 // print() is a characteristic of Manuscript objects
     void print(Console console);
 }
 
+// Article inherits all characteristics of objects in class Manuscript and adds its own
 interface Article extends Manuscript { // it has not only all Manuscript characteristics but also its own, i.e. submit()
     // a derived interface, which inherits the print() characteristic of the parent interface
     // object of derived interface should behave just like the advertised behaviors of parent interface
@@ -55,6 +55,8 @@ class Article extends Manuscript {
 // Class Article copies method print() and attribute body from class Manuscript
 
 // why is it bad?
-//   implementation inheritance is a procedural technique for code reuse
-//   implementation inheritance turns objects into containers with data and procedures
+// 1) implementation inheritance is a procedural technique for code reuse
+//    implementation inheritance turns objects into containers with data and procedures
+// 2) it creates tight coupling between derived classes and base class 
+//    modifying base class may affect derived classes
 
