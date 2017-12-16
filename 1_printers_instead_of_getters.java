@@ -1,12 +1,10 @@
 // Getters and Setters are bad design
-//
 //  1) getters and setters expose object's data
 //  2) they make objects passive data hodlers and we get information from or set status to them
 //     objects should be active components, with some responsibility
 //  3) they encourage procedural programming (we don't try objects, and only trust the data they store)
 //
 // example 1
-//
 // (bad design: passive data holders)
 Dog dog = new Dog();
 dog.setBall(new Ball());
@@ -14,14 +12,12 @@ Ball ball = dog.getBall();
 dog.setWeight("23kg");
 
 // (good design: active entities)
-
 Dog dog = new Dog("23kg"); // weight is Dog's characteristic
 int weight = dog.weight();
 dog.take(new Ball());      // a Dog can actively take and give a Ball
 Ball ball = dog.give();    // dog object should never return NULL (NULL references are also bad design)
 
 // example 2
-//
 // (bad design: use JAXB annotation to print fields in XML format)
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

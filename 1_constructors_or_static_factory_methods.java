@@ -130,8 +130,9 @@ class Color {
     }
 }
 
-class PantoneColor extends Color {     // a subtype class with a collaborator PantoneName
+class PantoneColor extends Color {     // a subtype class of class Color that overrides ligher() method
     // sometimes it's more desirable to pick the next lighter color through a set of available Pantone colors
+    // it uses a collaborator PantoneName to get the next lighter pantone color
 
     private final PantoneName pantone;
 
@@ -153,7 +154,7 @@ class Color {
 
     private final String code;
 
-    // the static method makes the decision of create what subtype objects
+    // the static method makes the decision of creating what subtype objects
     static Color make(int h) {         // use a static factory method to create subtype objects
         if (h == 0xBF1932) {           // if the true red color is requested, return an instance of PantoneColor
             return new PantoneColor("19-1664 TPX");
@@ -166,28 +167,31 @@ Color color = Color.make(0xBF1932);    // this creates a PantoneColor
 Color color = Color.make(0xFF6347);    // this creates a RGBColor
 
 // (not so good design: create a new class for making the decision of create what subtype objects)
-interface Color {
+interface Color {       // make Color an interface
     Color lighter();
 }
 
 class Colors {          // a new class responsible for creating what subtype objects
-    Color make(int h) {
-        if (h == 0xBF1932) {
+    Color make(int h) { // i.e. move the decision logic into a new class Colors
+        if (h == 0xBF1932) {           // if the color is true red
             return new PantoneColor("19-1664-TPX");
         }
-        return new RGBColor(h);
+        return new RGBColor(h);        // all other cases
     }
 }
 
-colors.make(0xBF1932);
+Colors colors = new Colors();
+colors.make(0xBF1932);                 // this creates a PantoneColor
+colors.make(0xFF6347);                 // this creates a RGBColor
+
 // why is it not so good?
 // 1) we're taking the decision-making away from the object it belongs to, i.e. class PantoneColor
 // 2) we tear our objects into two pieces
 //    the first piece is the object itself
 //    the second one is the decision making algorithm that stays somewhere else
 
-// (good design: put the logic into an object of class PantoneColor which decorates original class RGBColor)
-class PantoneColor {
+// (good design: put the decision logic into class PantoneColor which decorates the original class RGBColor)
+class PantoneColor { // a decoration class with extra logic by overriding lighter() method
 
     private final Color origin;
 
@@ -198,8 +202,8 @@ class PantoneColor {
     @Override
     public Color lighter() {
         final Color next;
-        if (this.origin.hex() == 0xBF1932) {
-            next = new RGBColor(0xD12631);
+        if (this.origin.hex() == 0xBF1932) { // override the lighter method, so that if the color is true red
+            next = new RGBColor(0xD12631);   // the lighter method retruns the next lighter pantone color
         } else {
             next = this.origin.lighter();
         }
@@ -211,7 +215,9 @@ class PantoneColor {
 Color red = new PantoneColor(new RGBColor(0xBF1932));
 // we ask red to return a lighter color and it returns the one from the Pantone palette
 //   not the one that is merely lighter in RGB coordinates:
-Color lighter = red.lighter(); // 0xD12631
+Color lighter = red.lighter(); // 0xD12631, the next lighter pantone color
+// this example is rather primitive and needs further improvement
+// i.e. it needs to be applicable to all Pantone colors
 
 // why is it good?
 // 1) the logic must stay inside the class, i.e. class PantoneColor, not somewhere outside
