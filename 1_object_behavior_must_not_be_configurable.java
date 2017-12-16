@@ -262,3 +262,6 @@ Page page = new NeverEmptyPage(
 )
 String html = new AlwaysTextPage(new TextPage(page, "ISO_8859_1"), page).html();
 
+// why is it good?
+// 1) the logic is not mixed, each object/decorator is responsible for one thing
+// 1) the code is more testable
