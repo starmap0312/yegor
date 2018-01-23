@@ -29,5 +29,5 @@ class HTTP {
     }
 }
 
-// objects representing the Universe are not good enough
+// objects representing the Universe are usually not good enough
 //   because there is only one Universe, so why do we need many representatives (objects) of it
