@@ -64,17 +64,16 @@ void transform(File in, File out) {
     Collection<String> dest = new FileLines(new UnicodeFile(out));
     dest.addAll(src);
 }
-
-// 1) class FileLines implements Collection<String>:
+// 1) class UnicodeFile implements FILE:
+//    it reads and writes files as unicode encoding
+// 2) class FileLines implements Collection<String>:
 //    it behaves exactly as a collection of strings and hides all I/O operations
 //    it encapsulates all file reading and writing operations
 //      when we iterate() it, a file is being read
 //      when we addAll() to it, a file is being written
-// 2) class Trimmed implements Collection<String>:
+// 3) class Trimmed implements Collection<String>:
 //    every time the next line is retrieved, it gets trimmed
 //    it works as a decorator class
-// 3) class UnicodeFile implements FILE:
-//    it reads and writes files as unicode encoding
 // 4) advantages:
 //    every class has only one responsibility, following the single responsibility principle
 //    it is easier to develop, maintain and unit-test classes
@@ -97,8 +96,8 @@ class FileUtils {
     }
 }
 // why is it bad?
-//   the utility method readWords() is responsible for too many things
-//   to test it we need to prepare a file for it to read and debug the code if the result is not what we expect
+// 1) the utility method readWords() is responsible for too many things
+// 2) to test it we need to prepare a file for it to read and debug the code if the result is not what we expect
 //
 // (good design: distribute the responsibilities to different objects)
 // Step 1: turn the utility method into a class
