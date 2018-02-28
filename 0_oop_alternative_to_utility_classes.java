@@ -1,7 +1,7 @@
 // OOP Alternative to Utility Classes
-//   utility classes are not proper objects
-//   ex. StringUtils, IOUtils, FileUtils (Apache Commons), Iterables, Iterators (Guava), Files (JDK7)
-//   they inherited from procedural programming (a functional decomposition paradigm)
+// 1) utility classes are not proper objects
+//    ex. StringUtils, IOUtils, FileUtils (Apache Commons), Iterables, Iterators (Guava), Files (JDK7)
+// 2) they inherited from procedural programming (a functional decomposition paradigm)
 //
 // example: a utility method max() for selecting the maximum value of two
 //
@@ -22,7 +22,7 @@ int max = NumberUtils.max(10, 5);
 // 1) instantiate and compose objects: let them manage data when and how they desire
 // 2) instead of calling supplementary static functions (utility methods), we should create objects that are
 //    capable of exposing the behavior we are seeking
-//    ex. create Max objects responsible for selecting maximum value of its two values
+//    ex. create a Max object responsible for selecting maximum value of its two values
 public class Max implements Number {
 
     private final int a;
@@ -54,8 +54,9 @@ void transform(File in, File out) { // define a procedure of execution
     FileUtils.writeLines(out, dest, "UTF-8");                  // save the collection in another file 
 }
 // why is it bad?
-//   the method is responsbile for too many things
-//   it is hard to test the method (we need to prepare a real file if want to test the method)
+// 1) the method is responsbile for too many things
+// 2) it is hard to test the method (we need to prepare a real file if want to test the method)
+//    ex. we cannot test the trim() functionality without providing a real file
 
 // (good design: object-oriented programming)
 void transform(File in, File out) {
@@ -77,6 +78,7 @@ void transform(File in, File out) {
 // 4) advantages:
 //    every class has only one responsibility, following the single responsibility principle
 //    it is easier to develop, maintain and unit-test classes
+//      ex. we can test the functionality of class Trimmed using a test double
 //    it is declarative: i.e. lazy execution, the file is not read until its data is required
 //      the whole task starts only after we call addAll()
 
@@ -157,7 +159,7 @@ class Words implements Iterable<String> {
     }
 }
 // why is this good?
-//   the code is more testable and reusable: we don't need to prepare a file for it to read
+//   the code is more testable and reusable: we don not need to prepare a file for it to read
 
 // ex. the test code
 import org.junit.Test;
