@@ -5,7 +5,7 @@
 // 2) they tear objects apart and keeping parts in different places
 //    ex. containers, sessions, managers, controllers
 //
-// example: @Inject
+// example1: guice @Inject
 //
 // (bad design: annotate a property with @Inject)
 import javax.inject.Inject;
@@ -45,7 +45,7 @@ class Books {
     // some methods here, which use this.db
 }
 
-// example: @XmlElement
+// example: xml marshaller @XmlElement
 //
 // (bad design)
 import javax.xml.bind.annotation.XmlElement;
@@ -70,9 +70,9 @@ public class Book {
 final Book book = new Book("0132350882", "Clean Code");
 final JAXBContext context = JAXBContext.newInstance(Book.class);
 final Marshaller marshaller = jaxbContext.createMarshaller();
-marshaller.marshal(book, System.out);
+marshaller.marshal(book, System.out); // marshal a Java object to an XMl
 // why is it bad?
-// 1) it is not the book instance that creates the XML. it's someone else, outside of the class Book
+// 1) it is not the book instance that creates the XML. it's someone else (ex. marshaller), outside of the class Book
 // 2) the control is lost (not inverted, but lost!)
 // 3) the object is not in charge any more: it can't be responsible for what's happening to it
 //   
