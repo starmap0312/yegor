@@ -70,7 +70,7 @@ public class Book {
 final Book book = new Book("0132350882", "Clean Code");
 final JAXBContext context = JAXBContext.newInstance(Book.class);
 final Marshaller marshaller = jaxbContext.createMarshaller();
-marshaller.marshal(book, System.out); // marshal a Java object to an XMl
+marshaller.marshal(book, System.out); // marshal a Java object to an XML string
 // why is it bad?
 // 1) it is not the book instance that creates the XML. it's someone else (ex. marshaller), outside of the class Book
 // 2) the control is lost (not inverted, but lost!)
@@ -91,7 +91,7 @@ class DefaultBook implements Book { // the default class has no idea about XML
     }
 }
 
-class XmlBook implements Book { // decorator adds an additional functionality: toXML()
+class XmlBook implements Book { // decorator adds an additional functionality: toXML(), which marshal itself to an XML string
 
     private final Book origin;
 
@@ -117,7 +117,7 @@ String xml = new XmlBook(new DefaultBook("Elegant Objects")).toXML();
 // why is it good?
 // 1) the XML printing functionality is inside XmlBook
 //    i.e. the functionality always stays where it belongs (inside the object)
-// 2) only the object knows how to print itself to the XML. nobody else
+// 2) only the object knows how to print itself to the XML. nobody else knows what its content is
 // 3) decorator class XmlBook is decoupled from concrete class DefaultBook
 //
 // (bad design: use extends)
@@ -138,9 +138,9 @@ class XmlBook extends DefaultBook {
 String xml = new XmlBook("Elegant Objects").toXML();
 // why is it bad?
 // 1) subclass XmlBook does not code to the interface, but rather a concrete superclass
-//    whatever changes to DefaultBook may affect XmlBook
-// 2) never use extends, use decorator class, no matter it is to add an additional responsibility to a class, or
-//    to decorates a class's responsibility
+//    they are tightly coupled, i.e. whatever changes to DefaultBook may affect XmlBook
+// 2) never use extends, use decorator class instead
+//    whether it is to add an additional responsibility to a class, or to decorates a class's responsibility, always use decorator class
 //
 // (alternative good design: let the class has one more responsibilities, i.e. move toXML() to DefaultBook)
 // move the toXML() method to the DefaultBook class, the class has two responsibilites
@@ -167,9 +167,9 @@ class DefaultBook implements Book {
 // 1) the functionality always stays where it belongs (inside the object)
 // 2) only the object knows how to print itself to the XML
 // drawback:
-//   consider to use decorator class when the functionalities grow
+//   the class may eventually blows up when the functionalities grow (consider to use decorator class instead)
 //
-// example: @RetryOnFailure
+// example3: @RetryOnFailure (Repeating Java methods on exception)
 //
 // (bad design: use annotation)
 import com.jcabi.aspects.RetryOnFailure;
@@ -246,4 +246,4 @@ class Retry {
 // client
 Foo foo = new FooThatRetries(new Foo());
 // why is it good?
-//   we can see the entire composition process
+//   the readability is improved, i.e. we can see the entire composition process
