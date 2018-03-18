@@ -15,7 +15,7 @@ queryBuilder.
 //    this makes developers harder to maintain the code
 // ex.
 interface Counter {
-    public Counter count();
+    public Counter count();               // a fluent method that returns itself
     public Integer getCount();
 }
 
@@ -26,9 +26,11 @@ class EchoingCounter implements Counter { // a decorator class
         this.counter = counter;
     }
 
-    public Counter count() {
-        System.out.println("Echo");       // decorates the method with an printed "Echo"
-        return this.counter.count();      // delegate to the wrapped object's count() method
+    public Counter count() {              // a fluent method that returns itself
+        System.out.println("Echo");       //   decorates the method with an printed "Echo"
+        return this.counter.count();      //   delegates to the wrapped object's count() method
+                                          // can i return the decorated object here? yes
+                                          //   return new EchoingCounter(this.counter.count());
     }
 
     public Integer getCount() {
@@ -39,7 +41,7 @@ class EchoingCounter implements Counter { // a decorator class
 
 counter = new EchoingCounter(new FluentCounter());
 counter = counter.
-    count(). // "Echo" is printed only once, because this returns the wrapped object FluentCounter()
+    count(). // "Echo" is printed only once, because this returns the wrapped FluentCounter(), which is not decorated
     count(); // "Echo" is NOT printed here
 
 // 2) Fluent Interfaces are harder to Mock
@@ -47,22 +49,18 @@ counter = counter.
 //      we need to mock every fluent method regardless of the parameters or even when we don't have expectations on the API
 //      ex. methods count() return a Counter, so the mock object should do that too?
 
-// example: jcabi-http 
+// yegor example: jcabi-http 
 String html = new JdkRequest("https://www.google.com").
     method("GET").          // returns a Request
-    fetch().                // returns a Response
+    fetch().                // returns a Response (a new interface)
     as(RestResponse.class). // decorates the Response with RestResponse, in order to make it method-richer
     assertStatus(200).
     body();
-// the only way to add a new functionality to class JdkRequest (implements Request) is to make the class bigger
-// ex. first, it has method() and fetch() methods
-//     then, multipartBody() and timeout() methods are added
-
-// workaround:
-//   class Response has a as(RestResponse.class) method to decorates itself
-//   so that we don't have to make class Response contain 50+ methods
-//   but in Java, we have to rely heavily on Reflection and type casting to achieve this
-//   without the Reflection and type casting, you have to write the following code:
+// the only way to add a new functionality to class JdkRequest (which implements Request) while keeping the class fluent
+//   is to make the class/interface bigger
+// ex. at first, it only has method() and fetch() methods
+//     but later, we add multipartBody() and timeout() methods to the interface
+// ex. fluent methods that decorates Response
 class Response {
     RestResponse asRestResponse() {
         return new RestResponse(this);
@@ -70,7 +68,7 @@ class Response {
     XmlResponse asXmlResponse() {
         return new XmlResponse(this);
     }
-    // 50+ methods
+    // and 50+ methods ...
 }
 
 class RestResponse implements Response { // an decorator class
@@ -79,9 +77,16 @@ class RestResponse implements Response { // an decorator class
   // Additional 14 methods
 }
 
+// workaround:
+//   class Response has a as(RestResponse.class) method to decorates itself
+//   so that we don't have to make class Response contain 50+ methods
+//   but in Java, we have to rely heavily on Reflection and type casting to achieve this
+//   without the Reflection and type casting, you have to write the following code:
+// ex. as(RestResponse.class), assertStatus(200), etc.
+
 // in summary, fluent interfaces mean large classes or some ugly workarounds
 
-// better design (in OOP respective): use decorators
+// a pure OOP design: remove fluent methods and use solely decorators 
 String html = new BodyOfResponse(
     new ResponseAssertStatus(
         new RequestWithMethod(
@@ -91,8 +96,22 @@ String html = new BodyOfResponse(
         200
     )
 ).toString();
+// why is it good?
+// the interface remains small with a single responsibility
+public interface Request {
+    Response fetch() throws IOException;
+}
+// new functionality implies new decorator class that decorates the same method fetch()
+
+// otherwise, the fluent interface grows as the new functionality is required
+public interface Request {
+    Request method(String method);
+    Request timeout(int connect, int read);
+    Response fetch() throws IOException;
+}
+
 // cons:
-//   we will have to remember many of the names of the classes
+//   we will have to remember many of the names of the classes (with fluent methods, IDE will help us without memorizing them)
 //    the construct looks rather difficult to read, as it's very far away from the DSL idea
 // pros:
 //   each object is small, very cohesive and they are all loosely coupled
