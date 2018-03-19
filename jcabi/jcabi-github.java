@@ -22,6 +22,13 @@
  */
 
 // interface
+public interface Request {
+
+    Request method(String method);
+    Response fetch() throws IOException;
+}
+
+// interface
 public interface Github {
 
     /*
@@ -606,7 +613,7 @@ public interface JsonReadable {
 /*
  * Smart JSON (supplementary help class).
  * ex.
- *   new SmartJson({"first": "a"}).text("first")                    // JsonString.class
+ *   new SmartJson({"first": "a"}).text("first")                   // JsonString.class
  *   new SmartJson({"second": 1}).number("second")                 // JsonNumber.class
  *   new SmartJson({"arr": [1, 2]})).value("arr", JsonArray.class) // JsonArray.class
  *   new SmartJson({"o": {"foo": [1]}})).value("o", JsonObject.class).getJsonArray("foo") // JsonObject.class
