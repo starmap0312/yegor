@@ -1,6 +1,6 @@
 // Fluent interface
-//   in a Fluent Interface, the return value of a method will be the same instance on which the method was called.
-//   ex.
+//   in a Fluent Interface, the return value of a method will be the same instance on which the method was called
+//   ex. it makes sense for use cases such as query builder:
 queryBuilder.
     select("name").
     from("user").
@@ -60,6 +60,13 @@ String html = new JdkRequest("https://www.google.com").
 //   is to make the class/interface bigger
 // ex. at first, it only has method() and fetch() methods
 //     but later, we add multipartBody() and timeout() methods to the interface
+public interface Request {
+    Request method(String method);
+    Response fetch() throws IOException;
+    // later, we need to add more functionalities to the fluent interface 
+    RequestBody body();
+    Request timeout(int connect, int read);
+}
 // ex. fluent methods that decorates Response
 class Response {
     RestResponse asRestResponse() {
@@ -96,6 +103,16 @@ String html = new BodyOfResponse(
         200
     )
 ).toString();
+// or we can define the decorators as inner static classes (so that related code are grouped together)
+String html = new Response.Body(
+  new Response.AssertStatus(
+    new Request.WithMethod(
+      new JdkRequest("https://www.google.com"),
+      "GET"
+    ),
+    200
+  )
+).toString();
 // why is it good?
 // the interface remains small with a single responsibility
 public interface Request {
@@ -111,8 +128,9 @@ public interface Request {
 }
 
 // cons:
-//   we will have to remember many of the names of the classes (with fluent methods, IDE will help us without memorizing them)
-//    the construct looks rather difficult to read, as it's very far away from the DSL idea
+//   without fluent interface, we will have to remember many of the names of the classes
+//     with fluent methods, IDE will help us without memorizing them)
+//   the construct looks rather difficult to read, as it's very far away from the DSL idea
 // pros:
 //   each object is small, very cohesive and they are all loosely coupled
 //   adding new functionality to the library is as easy as creating a new class (no need to touch existing classes) 
